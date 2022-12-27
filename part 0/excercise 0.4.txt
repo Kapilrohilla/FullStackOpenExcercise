@@ -28,7 +28,10 @@ end note
 browser->server:HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
 server-->browser: reload the site
 
-note over server:The code at server push the data in server for the POST request is quite simple 
+note over server:
+The code at server push the data in database/.json
+for the POST request
+end note
 note over server,browser
 server send three file (an HTML file,main.css,
 main.js)
@@ -49,4 +52,3 @@ server-->browser:[{content:"",date:2022-12-27T09:03:38.444Z},...]
 note over browser
 browser create updated unordered list using the data contain .json file
 end note
-
