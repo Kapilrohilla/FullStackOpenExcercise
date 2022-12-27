@@ -1,0 +1,52 @@
+title excercise 0.4
+
+browser->server:HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser:HTML-Code
+browser->server:HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser:main.css
+browser->server:HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser:main.js
+
+note over browser:
+browser start executing the javascript file
+(main.js) that request JSON data from server
+end note 
+
+browser->server:GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser:[{content:"",date:2022-12-27T09:03:38.444Z},...]
+
+note over browser:
+browser create unordered list using the data 
+contain.json file
+end note
+
+note over browser,server:
+User Enter the content in input box(of form tag)
+and click on save button
+end note
+
+browser->server:HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+server-->browser: reload the site
+
+note over server:The code at server push the data in server for the POST request is quite simple 
+note over server,browser
+server send three file (an HTML file,main.css,
+main.js)
+end note
+
+server-->browser:HTML-Code(notes.html)
+server-->browser:main.css
+server-->browser:main.js
+
+note over browser
+browser start executing the javascript file 
+(main.js) that request JSON data from server.
+end note
+
+browser->server:GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser:[{content:"",date:2022-12-27T09:03:38.444Z},...]
+
+note over browser
+browser create updated unordered list using the data contain .json file
+end note
+
