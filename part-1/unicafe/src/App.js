@@ -8,6 +8,11 @@ const Stats = ({value,text,total}) => {
         <p>No feedback given</p>
     )
   }
+  if(text==='positive'){
+    return (
+      <p>{text} {value} %</p>
+    )
+  }
   return (
     <>
       <p>{text} {value}</p>
