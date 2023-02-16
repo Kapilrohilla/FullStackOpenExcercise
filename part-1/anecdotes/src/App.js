@@ -1,8 +1,27 @@
 import './App.css';
 import { useState } from 'react';
-
+//component for heading
+const Heading = (prop) => <h2>{prop.text}</h2>
+//componenet for vote, next anecdotes button
 const Button = ({text,handleClick}) => <button onClick={handleClick}>{text}</button>
-
+// component to show anecdotes with most votes
+const WithMostVotes = ({anecdotes,vote}) => {
+  let maxVote = Math.max(...vote);
+  let result;
+  // calculating the array index with most votes
+  for(let i=0;i<anecdotes.length;i++){
+      if(vote[i] === maxVote){
+        result = i;
+      }
+  }
+  return (
+    <>
+      <p>{anecdotes[result]}</p>
+      <p>has {maxVote} votes</p>
+    </>
+    
+  )
+}
 function App() {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -20,6 +39,7 @@ function App() {
   const random = () =>{
     setSelected(Math.floor(Math.random() * anecdotes.length));
   }
+  // function to increase vote number to a anecdote
   const handleVote = () => {
     let newVote = vote.map((element,i)=>{ 
       if(i===selected){
@@ -30,14 +50,16 @@ function App() {
     });
     setVote(newVote);
   }
-
-
   return (
     <div>
-       <p>{anecdotes[selected]}</p>
-       <p>has {vote[selected]} votes</p>
+      <Heading text="Anecdotes of the day" />
+      <p>{anecdotes[selected]}</p>
+      <p>has {vote[selected]} votes</p>
       <Button text="Vote" handleClick={handleVote} />
       <Button text="next anecdotes" handleClick={random} />
+
+      <Heading text="Anecdotes with most Votes" />
+      <WithMostVotes anecdotes={anecdotes} vote={vote} />
     </div>
   );
 }
