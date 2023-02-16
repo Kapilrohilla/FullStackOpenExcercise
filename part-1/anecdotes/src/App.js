@@ -1,7 +1,8 @@
 import './App.css';
 import { useState } from 'react';
 
-const Button = ({text,handleClick}) => <button onClick={handleClick} style={{marginTop: '30px'}}>{text}</button>
+const Button = ({text,handleClick}) => <button onClick={handleClick}>{text}</button>
+
 function App() {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -14,13 +15,28 @@ function App() {
     'The only way to go fast, is to go well.'
   ];
   const [selected,setSelected] = useState(0);
+  const [vote,setVote] = useState([0,0,0,0,0,0,0,0]);
+
   const random = () =>{
     setSelected(Math.floor(Math.random() * anecdotes.length));
   }
+  const handleVote = () => {
+    let newVote = vote.map((element,i)=>{ 
+      if(i===selected){
+        return element+1;
+      }else{
+        return element;
+      }
+    });
+    setVote(newVote);
+  }
+
 
   return (
     <div>
-      {anecdotes[selected]}<br/>
+       <p>{anecdotes[selected]}</p>
+       <p>has {vote[selected]} votes</p>
+      <Button text="Vote" handleClick={handleVote} />
       <Button text="next anecdotes" handleClick={random} />
     </div>
   );
