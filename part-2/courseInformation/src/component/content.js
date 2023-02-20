@@ -1,12 +1,10 @@
-import Part from "./part"
+import Part, {Total} from "./part"
 
 export default function Content ({prop}) {
-    const[forPart1, forPart2, forPart3] = prop;
     return (
         <>
-            <Part topicName={forPart1.name} excercise={forPart1.exercises}/>
-            <Part topicName={forPart2.name} excercise={forPart2.exercises}/>
-            <Part topicName={forPart3.name} excercise={forPart3.exercises}/>
+            <Part prop={prop} />
+            <Total prop={prop} />
         </>
     )
 }
