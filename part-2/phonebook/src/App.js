@@ -2,13 +2,16 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number: '040-123456', id: 1 }
   ]) 
 
   const [newName, setNewName] = useState('');
-
-  const data = (e) => {
+  const [newNumber,setNewNumber] = useState('')
+  const nameData = (e) => {
     setNewName(e.target.value);
+  }
+  const phoneData = (e) => {
+    setNewNumber(e.target.value);
   }
 
   const insertData = () => {
@@ -17,14 +20,20 @@ const App = () => {
     // alert condition
     if(names.includes(newName)) alert(`${newName} already added to phonebook`)
     else if(newName.length > 0){
+      let newObj = {
+        name: newName,
+        number: newNumber,
+        id: persons[persons.length-1].id+1
+      }
         setPersons([
           ...persons,
-          {name: newName}
+          newObj
         ])
     }
     setNewName('');
+    setNewNumber('');
   }
-  
+
   const presentData = (e) => e.preventDefault();
 
   return (
@@ -32,7 +41,10 @@ const App = () => {
       <h2>Phonebook</h2>
       <form onSubmit={presentData}>
         <div>
-          name: <input value={newName} onChange={data}/>
+          name: <input value={newName} onChange={nameData}/> <br /><br />
+        </div>
+        <div>
+          number: <input value={newNumber} onChange={phoneData}/> 
         </div>
         <div>
           <button type="submit" onClick={insertData}>add</button>
@@ -42,7 +54,7 @@ const App = () => {
       <div className="data">
         {
           persons.map((data)=>{
-             return <p key={data.name}>{data.name}</p> // use of name as key is suggested in quesion
+             return <p key={data.id}>{data.name}  {data.number}</p> // use of name as key is suggested in quesion
           }) 
         }
       </div>
