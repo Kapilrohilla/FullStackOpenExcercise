@@ -1,12 +1,19 @@
-import { useState } from 'react'
+import axios from 'axios';
+import { useEffect, useState } from 'react'
 import Filter, { PersonData, PersonForm } from './component';
+
 const App = () => {
   // states
-  const [persons, setPersons] = useState([{ name: 'Arto Hellas', number: '040-123456', id: 1 }])
+  const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState("")
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('')
-
+  useEffect(() => {
+    const initialData = axios.get('http://localhost:3001/persons');
+    initialData.then(response => {
+      setPersons(response.data);
+    })
+  }, []);
   const handleNameData = (e) => setNewName(e.target.value);
   const handlePhoneData = (e) => setNewNumber(e.target.value);
   const handleFilter = (e) => setFilter(e.target.value)
@@ -40,7 +47,7 @@ const App = () => {
       <PersonForm handleNameData={handleNameData} handlePhoneData={handlePhoneData} newName={newName} newNumber={newNumber} insertData={insertData} />
 
       <h2>Numbers</h2>
-      <PersonData filter={filter} persons={persons} />
+      <PersonData filterState={filter} persons={persons} />
 
     </div>
   )

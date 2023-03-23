@@ -23,11 +23,11 @@ const PersonForm = ({ handleNameData, handlePhoneData, newName, newNumber, inser
     )
 }
 
-const PersonData = ({ filter, persons }) => {
+const PersonData = ({ filterState, persons }) => {
     return (
         <div className="data">
             {persons.filter(person => {
-                const regex = new RegExp(filter, "i")
+                const regex = new RegExp(filterState, "i")
                 return regex.test(person.name)
             }).map(person => {
                 return (<p key={person.id}>{person.name} {person.number}</p>)
