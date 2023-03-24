@@ -17,7 +17,7 @@ const PersonForm = ({ handleNameData, handlePhoneData, newName, newNumber, inser
                 number: <input value={newNumber} onChange={handlePhoneData} />
             </div>
             <div>
-                <button type="submit" onClick={() => insertData()}>add</button>
+                <button type="submit" onClick={() => insertData(newName, newNumber)}>add</button>
             </div>
         </form>
     )

@@ -18,7 +18,12 @@ const App = () => {
   const handlePhoneData = (e) => setNewNumber(e.target.value);
   const handleFilter = (e) => setFilter(e.target.value)
 
-  const insertData = () => {
+  const insertData = (newName, newNumber) => {
+    const newData = {
+      "name": newName,
+      "number": newNumber
+    }
+    axios.post('http://localhost:3001/persons', newData);
     // names will an array that collect name's from our previous array 'person'
     let names = persons.map(obj => obj.name);
     // alert condition
