@@ -14,8 +14,10 @@ const create = (newObject) => {
     return data;
 }
 const deleteObj = (id) => {
-    const promise = axios.delete(`${baseUrl}/${id}`);
-    console.log(promise);
+    axios.delete(`${baseUrl}/${id}`);
 }
-const connect = { getAll, create, deleteObj }
+const update = (id, newObject) => {
+    axios.put(`${baseUrl}/${id}`, newObject)
+}
+const connect = { getAll, create, deleteObj, update }
 export default connect;

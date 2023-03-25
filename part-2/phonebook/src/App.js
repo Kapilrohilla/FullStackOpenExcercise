@@ -13,7 +13,7 @@ const App = () => {
   useEffect(() => {
     connect
       .getAll()
-      .then(r => setPersons(r))
+      .then(r => setPersons(r));
   }, []);
   const handleNameData = (e) => setNewName(e.target.value);
   const handlePhoneData = (e) => setNewNumber(e.target.value);
@@ -26,8 +26,22 @@ const App = () => {
     }
     // names will an array that collect name's from our previous array 'person'
     let names = persons.map(obj => obj.name);
-    // alert condition
-    if (names.includes(newName)) alert(`${newName} already added to phonebook`)
+    if (names.includes(newName)) {
+      const isReplace = window.confirm(`${newName} already added to phonebook, replace the old number with new one?`);
+      if (isReplace) {
+        let id;
+        persons.forEach((obj) => {
+          if (obj.name === newName) {
+            id = obj.id;
+          }
+        });
+        newData.id = id;
+        connect.update(id, newData);
+        setPersons(persons.map((obj) => obj.id === id ? newData : obj))
+      } else {
+        console.log("request to update number is rejected");
+      }
+    }
     else {
       connect
         .create(newData)
