@@ -1,5 +1,3 @@
-import connect from "./connectBackend";
-
 const Filter = ({ filterState, handleChange }) => {
     return (
         <div>

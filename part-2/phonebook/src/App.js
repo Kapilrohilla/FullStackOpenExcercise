@@ -24,14 +24,14 @@ const App = () => {
       "name": newName,
       "number": newNumber
     }
-    connect
-      .create(newData)
-      .catch('unable to insert data');
     // names will an array that collect name's from our previous array 'person'
     let names = persons.map(obj => obj.name);
     // alert condition
     if (names.includes(newName)) alert(`${newName} already added to phonebook`)
-    else if (newName.length > 0) {
+    else {
+      connect
+        .create(newData)
+        .catch('unable to insert data');
       let newObj = {
         name: newName,
         number: newNumber,
