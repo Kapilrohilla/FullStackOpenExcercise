@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Filter, { PersonData, PersonForm } from './component';
+import Filter, { PersonData, PersonForm, Notification } from './component';
 import connect from './connectBackend';
 
 // base url for database is localhost:3001/persons
@@ -9,7 +9,8 @@ const App = () => {
   const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState("")
   const [newName, setNewName] = useState('');
-  const [newNumber, setNewNumber] = useState('')
+  const [newNumber, setNewNumber] = useState('');
+  const [msg, setMsg] = useState(null);
   useEffect(() => {
     connect
       .getAll()
@@ -37,7 +38,9 @@ const App = () => {
         });
         newData.id = id;
         connect.update(id, newData);
-        setPersons(persons.map((obj) => obj.id === id ? newData : obj))
+        setPersons(persons.map((obj) => obj.id === id ? newData : obj));
+        setMsg(`Updated ${newName}`);
+        setTimeout(() => setMsg(null), 3000);
       } else {
         console.log("request to update number is rejected");
       }
@@ -55,6 +58,8 @@ const App = () => {
         ...persons,
         newObj
       ]);
+      setMsg(`Added ${newData.name}`);
+      setTimeout(() => setMsg(null), 3000);
     }
     setNewName('');
     setNewNumber('');
@@ -63,7 +68,18 @@ const App = () => {
     const isDelete = window.confirm(`Delete ${person.name}`);
     if (isDelete) {
       connect
-        .deleteObj(person.id);
+        .deleteObj(person.id)
+        .then(() => {
+          setMsg(`${person.name} contact is deleted`);
+          setTimeout(() => setMsg(null), 3000);
+        })
+        .catch((error) => {
+          console.log(error);
+          setMsg('some error occurred check console for detail');
+          setTimeout(() => {
+            setMsg(null)
+          }, 3000);
+        });
       setPersons(persons.filter((obj) => {
         return obj.id !== person.id
       }));
@@ -73,6 +89,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={msg} />
       <Filter filterState={filter} handleChange={handleFilter} />
 
       <h2>add a new</h2>
