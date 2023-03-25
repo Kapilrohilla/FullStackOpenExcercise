@@ -1,3 +1,5 @@
+import connect from "./connectBackend";
+
 const Filter = ({ filterState, handleChange }) => {
     return (
         <div>
@@ -23,14 +25,16 @@ const PersonForm = ({ handleNameData, handlePhoneData, newName, newNumber, inser
     )
 }
 
-const PersonData = ({ filterState, persons }) => {
+const PersonData = ({ filterState, persons, handleDelete }) => {
+
     return (
         <div className="data">
             {persons.filter(person => {
                 const regex = new RegExp(filterState, "i")
                 return regex.test(person.name)
             }).map(person => {
-                return (<p key={person.id}>{person.name} {person.number}</p>)
+                return <p key={person.id}> {person.name} {person.number} &nbsp;
+                    <button onClick={() => handleDelete(person)}>delete</button></p>
             })}
         </div>
     )

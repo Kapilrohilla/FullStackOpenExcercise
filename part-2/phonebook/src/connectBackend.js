@@ -13,5 +13,9 @@ const create = (newObject) => {
     const data = promise.then(r => r.status)
     return data;
 }
-const connect = { getAll, create }
+const deleteObj = (id) => {
+    const promise = axios.delete(`${baseUrl}/${id}`);
+    console.log(promise);
+}
+const connect = { getAll, create, deleteObj }
 export default connect;

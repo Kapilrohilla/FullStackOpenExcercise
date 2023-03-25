@@ -45,7 +45,17 @@ const App = () => {
     setNewName('');
     setNewNumber('');
   }
+  const handleDelete = (person) => {
+    const isDelete = window.confirm(`Delete ${person.name}`);
+    if (isDelete) {
+      connect
+        .deleteObj(person.id);
+      setPersons(persons.filter((obj) => {
+        return obj.id !== person.id
+      }));
+    }
 
+  }
   return (
     <div>
       <h2>Phonebook</h2>
@@ -55,7 +65,7 @@ const App = () => {
       <PersonForm handleNameData={handleNameData} handlePhoneData={handlePhoneData} newName={newName} newNumber={newNumber} insertData={insertData} />
 
       <h2>Numbers</h2>
-      <PersonData filterState={filter} persons={persons} />
+      <PersonData handleDelete={handleDelete} filterState={filter} persons={persons} />
 
     </div>
   )
