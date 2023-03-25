@@ -1,6 +1,8 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react'
 import Filter, { PersonData, PersonForm } from './component';
+import connect from './connectBackend';
+
+// base url for database is localhost:3001/persons
 
 const App = () => {
   // states
@@ -9,10 +11,9 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('')
   useEffect(() => {
-    const initialData = axios.get('http://localhost:3001/persons');
-    initialData.then(response => {
-      setPersons(response.data);
-    })
+    connect
+      .getAll()
+      .then(r => setPersons(r))
   }, []);
   const handleNameData = (e) => setNewName(e.target.value);
   const handlePhoneData = (e) => setNewNumber(e.target.value);
@@ -23,7 +24,9 @@ const App = () => {
       "name": newName,
       "number": newNumber
     }
-    axios.post('http://localhost:3001/persons', newData);
+    connect
+      .create(newData)
+      .catch('unable to insert data');
     // names will an array that collect name's from our previous array 'person'
     let names = persons.map(obj => obj.name);
     // alert condition
