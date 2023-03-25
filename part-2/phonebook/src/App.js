@@ -11,6 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [msg, setMsg] = useState(null);
+  const [status, setStatus] = useState(false);
   useEffect(() => {
     connect
       .getAll()
@@ -41,6 +42,7 @@ const App = () => {
         setPersons(persons.map((obj) => obj.id === id ? newData : obj));
         setMsg(`Updated ${newName}`);
         setTimeout(() => setMsg(null), 3000);
+        setStatus(true);
       } else {
         console.log("request to update number is rejected");
       }
@@ -48,21 +50,28 @@ const App = () => {
     else {
       connect
         .create(newData)
-        .catch('unable to insert data');
-      let newObj = {
-        name: newName,
-        number: newNumber,
-        id: persons[persons.length - 1].id + 1
-      }
-      setPersons([
-        ...persons,
-        newObj
-      ]);
-      setMsg(`Added ${newData.name}`);
-      setTimeout(() => setMsg(null), 3000);
+        .then(() => {
+          let newObj = {
+            name: newName,
+            number: newNumber,
+            id: persons[persons.length - 1].id + 1
+          }
+          setPersons([
+            ...persons,
+            newObj
+          ]);
+          setMsg(`Added ${newData.name}`);
+          setTimeout(() => setMsg(null), 3000);
+          setStatus(true);
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch(() => {
+          setMsg('Some error occoured');
+          setTimeout(() => setMsg(null), 3000);
+          setStatus(false);
+        })
     }
-    setNewName('');
-    setNewNumber('');
   }
   const handleDelete = (person) => {
     const isDelete = window.confirm(`Delete ${person.name}`);
@@ -72,13 +81,14 @@ const App = () => {
         .then(() => {
           setMsg(`${person.name} contact is deleted`);
           setTimeout(() => setMsg(null), 3000);
+          setStatus(true);
         })
         .catch((error) => {
-          console.log(error);
-          setMsg('some error occurred check console for detail');
+          setMsg(`Information of ${person.name} is already removed from server`);
           setTimeout(() => {
             setMsg(null)
           }, 3000);
+          setStatus(false);
         });
       setPersons(persons.filter((obj) => {
         return obj.id !== person.id
@@ -89,7 +99,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={msg} />
+      <Notification message={msg} status={status} />
       <Filter filterState={filter} handleChange={handleFilter} />
 
       <h2>add a new</h2>

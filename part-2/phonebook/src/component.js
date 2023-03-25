@@ -37,7 +37,17 @@ const PersonData = ({ filterState, persons, handleDelete }) => {
         </div>
     )
 }
-const Notification = ({ message }) => {
+const Notification = ({ message, status }) => {
+    const fail = {
+        fontSize: '30px',
+        padding: '10px 5px',
+        color: 'red',
+        border: '5px solid red',
+        marginInline: '5px',
+        width: 'fit-content',
+        backgroundColor: 'rgb(200,200,200)',
+        fontFamily: 'monospace'
+    }
     const success = {
         fontSize: '30px',
         padding: '10px 5px',
@@ -50,7 +60,7 @@ const Notification = ({ message }) => {
     }
     if (message === null) return null
     return (
-        <p style={success}>{message}</p>
+        <p style={status ? success : fail}>{message}</p>
     )
 }
 export default Filter;
