@@ -1,3 +1,7 @@
+import axios from "axios"
+import { useEffect, useState } from "react"
+const api_key = process.env.REACT_APP_API_KEY;
+
 const Filter = ({ text, handleText }) => {
 
     return (
@@ -21,28 +25,38 @@ const ListOfCountry = ({ countries_name_after_search, handleShowBtn }) => {
         </ul>
     )
 }
-const SpecificData = ({ specificCountry }) => {
-    let key = 1;
-    const { ...languages } = Object.values(specificCountry['languages']).map((aLanguage, arr) => {
-        return <li key={key++}>{aLanguage}</li>
-    });
-    const country_name = specificCountry.name.common;
-    const capital_of_country = specificCountry.capital[0];
-    const area = specificCountry.area;
-    const flag_img = specificCountry.flags.png;
-    const flag_alt = specificCountry.flags.alt;
-    const languages_of_country = Object.values(languages);
+const SpecificData = ({ prop }) => {
+    const [weatherInfo, setWeatherInfo] = useState('nothing');
+
+    useEffect(() => {
+        axios
+            .get(`https://api.openweathermap.org/data/2.5/weather?lat=${prop.coordinates[0]}&lon=${prop.coordinates[1]}&appid=${api_key}&units=metric`)
+            .then(r =>
+                setWeatherInfo(r.data)
+            )
+    }, [prop]);
+
+    let temp, windSpeed, imgSrc;
+    if (weatherInfo.hasOwnProperty('main')) {
+        temp = weatherInfo.main.temp;
+        windSpeed = weatherInfo.wind.speed;
+        imgSrc = `https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png`;
+    }
     return (
         <div>
-            <h1>{country_name}</h1>
-            <p>Capital: {capital_of_country}</p>
-            <p>Area: {area}</p>
+            <h1>{prop.country_name}</h1>
+            <p>Capital: {prop.capital_of_country}</p>
+            <p>Area: {prop.area}</p>
             <h2>Language: </h2>
             <ul>
-                {languages_of_country}
+                {prop.languages_of_country}
             </ul>
-            <img src={flag_img} alt={flag_alt} />
-
+            <img src={prop.flag_img} alt={prop.flag_alt} />
+            <hr />
+            <h2>Weather in {prop.capital_of_country}</h2>
+            <p>temperature: {temp}</p>
+            <img src={imgSrc} alt="" />
+            <p>wind: {windSpeed}</p>
         </div>
     )
 

@@ -30,18 +30,30 @@ function App() {
       specificCountry = countries[i];
     }
   }
-
   if (countries_name_after_search.length > 10) {
     <TooManyData />
   }
   const handleShowCountry = (e, country) => {
     e.preventDefault();
-    // setShowCountry(country);
     setRegex(new RegExp(country, 'i'));
   }
   function switchCased() {
     if (countries_name_after_search.length === 1) {
-      return <SpecificData specificCountry={specificCountry} />
+      let key = 1;
+      const { ...languages } = Object.values(specificCountry['languages']).map((aLanguage, arr) => {
+        return <li key={key++}>{aLanguage}</li>
+      });
+
+      let prop = {
+        country_name: specificCountry.name.common,
+        capital_of_country: specificCountry.capital[0],
+        area: specificCountry.area,
+        flag_img: specificCountry.flags.png,
+        flat_alt: specificCountry.flags.alt,
+        languages_of_country: Object.values(languages),
+        coordinates: specificCountry.latlng
+      }
+      return <SpecificData prop={prop} />
     } else if (countries_name_after_search.length < 10) {
       return <ListOfCountry handleShowBtn={handleShowCountry} countries_name_after_search={countries_name_after_search} />
     } else {
