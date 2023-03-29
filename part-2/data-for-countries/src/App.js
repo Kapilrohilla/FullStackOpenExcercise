@@ -7,6 +7,7 @@ function App() {
   const [text, setText] = useState('');
   const [countries, setCountries] = useState([]);
   const [regex, setRegex] = useState(new RegExp(''));
+
   const handleText = (e) => {
     setText(e.target.value);
     setRegex(new RegExp(e.target.value, "i"));
@@ -29,15 +30,20 @@ function App() {
       specificCountry = countries[i];
     }
   }
+
   if (countries_name_after_search.length > 10) {
     <TooManyData />
   }
+  const handleShowCountry = (e, country) => {
+    e.preventDefault();
+    // setShowCountry(country);
+    setRegex(new RegExp(country, 'i'));
+  }
   function switchCased() {
-    // console.log(countries_name_after_search.length + ' data');
     if (countries_name_after_search.length === 1) {
       return <SpecificData specificCountry={specificCountry} />
     } else if (countries_name_after_search.length < 10) {
-      return <ListOfCountry countries_name_after_search={countries_name_after_search} />
+      return <ListOfCountry handleShowBtn={handleShowCountry} countries_name_after_search={countries_name_after_search} />
     } else {
       return <TooManyData />
     }

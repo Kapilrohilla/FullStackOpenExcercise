@@ -10,10 +10,10 @@ const Filter = ({ text, handleText }) => {
 const TooManyData = () => {
     return <p>Too many matches, specific another filter</p>
 }
-const ListOfCountry = ({ countries_name_after_search }) => {
+const ListOfCountry = ({ countries_name_after_search, handleShowBtn }) => {
     let key = 1;
     const list = countries_name_after_search.map(((aCountry) => {
-        return <li key={key++}>{aCountry}</li>
+        return <li key={key++}>{aCountry} <button onClick={(e) => handleShowBtn(e, aCountry)}>Show</button></li>
     }));
     return (
         <ul>
