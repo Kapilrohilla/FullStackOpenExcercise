@@ -38,7 +38,7 @@ const App = () => {
           }
         });
         newData.id = id;
-        connect.update(id, newData);
+        connect.update(id, newData)
         setPersons(persons.map((obj) => obj.id === id ? newData : obj));
         setMsg(`Updated ${newName}`);
         setTimeout(() => setMsg(null), 3000);
@@ -67,7 +67,7 @@ const App = () => {
           setNewNumber('');
         })
         .catch(() => {
-          setMsg('Some error occoured');
+          setMsg('Person validation failed: name >= 3 letter\'s');
           setTimeout(() => setMsg(null), 3000);
           setStatus(false);
         })
