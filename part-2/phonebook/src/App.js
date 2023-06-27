@@ -66,8 +66,9 @@ const App = () => {
           setNewName('');
           setNewNumber('');
         })
-        .catch(() => {
-          setMsg('Person validation failed: name >= 3 letter\'s');
+        .catch((err) => {
+          console.log(err.response.data);
+          setMsg(err.response.data.error);
           setTimeout(() => setMsg(null), 3000);
           setStatus(false);
         })
