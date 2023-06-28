@@ -39,10 +39,19 @@ const App = () => {
         });
         newData.id = id;
         connect.update(id, newData)
-        setPersons(persons.map((obj) => obj.id === id ? newData : obj));
-        setMsg(`Updated ${newName}`);
-        setTimeout(() => setMsg(null), 3000);
-        setStatus(true);
+          .then(() => {
+            setPersons(persons.map((obj) => obj.id === id ? newData : obj));
+            setMsg(`Updated ${newName}`);
+            setTimeout(() => setMsg(null), 3000);
+            setStatus(true);
+          })
+          .catch(err => {
+            console.log(err);
+            setMsg(err.response.data.error);
+            setTimeout(() => setMsg(null), 3000);
+            setStatus(false);
+          })
+
       } else {
         console.log("request to update number is rejected");
       }
@@ -67,7 +76,7 @@ const App = () => {
           setNewNumber('');
         })
         .catch((err) => {
-          console.log(err.response.data);
+          console.log(err);
           setMsg(err.response.data.error);
           setTimeout(() => setMsg(null), 3000);
           setStatus(false);
