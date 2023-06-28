@@ -46,8 +46,8 @@ const App = () => {
             setStatus(true);
           })
           .catch(err => {
-            console.log(err);
-            setMsg(err.response.data.error);
+            console.log(err.response.data);
+            setMsg(err.response.data);
             setTimeout(() => setMsg(null), 3000);
             setStatus(false);
           })
