@@ -1,12 +1,13 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const database_url = process.env.MONGODB_URI;
+const databaseUrl = process.env.MONGODB_URI
 
-mongoose.connect(database_url).then(r => {
-    console.log("connected to mongodb" + database_url);
+mongoose.connect(databaseUrl).then(r => {
+    console.log('connected to mongodb' + databaseUrl)
 }).catch(err => {
-    console.log(err);
-});
+    console.log(err)
+})
+
 const blogSchema = new mongoose.Schema({
     title: String,
     author: String,
@@ -14,6 +15,13 @@ const blogSchema = new mongoose.Schema({
     likes: Number
 })
 
-const Blog = mongoose.model('Blog', blogSchema);
+blogSchema.set('toJSON', {
+    transform: (doc, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
+    }
+})
+const Blog = mongoose.model('Blog', blogSchema)
 
-module.exports = Blog;
+module.exports = Blog
