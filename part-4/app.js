@@ -27,12 +27,11 @@ mongoose.connect(config.MONGODB_URI)
 
 app.use(cors());
 app.use(express.json());
-// middleware req Logger
 app.use(requestLogger);
 
 app.use('/api/blogs', blogRouter);
 app.use(unknownEndpoint);
 app.use(errorHandler);
-// middleware unknown endpoint , errorHandler
+
 
 module.exports = app;
