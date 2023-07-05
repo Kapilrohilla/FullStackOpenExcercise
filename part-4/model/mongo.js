@@ -1,12 +1,14 @@
 const mongoose = require('mongoose')
+// const { info, error } = require('../utils/logger');
+require('dotenv').config();
+// const config = require('../utils/config');
 
-const databaseUrl = process.env.MONGODB_URI
-
-mongoose.connect(databaseUrl).then(r => {
-    console.log('connected to mongodb' + databaseUrl)
-}).catch(err => {
-    console.log(err)
-})
+// info('connecting to monogdb url' + config.MONGODB_URI);
+// mongoose.connect(config.MONGODB_URI).then(r => {
+//     info('connected to mongodb');
+// }).catch(err => {
+//     error(err);
+// })
 
 const blogSchema = new mongoose.Schema({
     title: String,
@@ -24,4 +26,4 @@ blogSchema.set('toJSON', {
 })
 const Blog = mongoose.model('Blog', blogSchema)
 
-module.exports = Blog
+module.exports = Blog;
