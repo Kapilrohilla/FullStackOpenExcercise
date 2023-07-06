@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "jest": {
+    "testEnvironment": "node"
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
     "lint": "eslint .",
     "fixLint": "eslint . --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +26,7 @@
   "devDependencies": {
     "eslint": "^8.44.0",
     "eslint-config-standard": "^17.1.0",
+    "jest": "^29.6.1",
     "nodemon": "^2.0.22"
   }
 }
