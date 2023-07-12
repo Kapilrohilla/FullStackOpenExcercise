@@ -1,7 +1,7 @@
 const blogRouter = require('express').Router();
 const Blog = require('../model/mongo');
 
-blogRouter.get('/', (req, res) => {
+blogRouter.get('/', (req, res, next) => {
     Blog.find({})
         .then((blog) => {
             res.json(blog);
@@ -15,7 +15,7 @@ blogRouter.get('/', (req, res) => {
         })
 })
 
-blogRouter.post('/', (req, res) => {
+blogRouter.post('/', (req, res, next) => {
     const blog = new Blog(req.body);
     blog.save()
         .then(r => {
