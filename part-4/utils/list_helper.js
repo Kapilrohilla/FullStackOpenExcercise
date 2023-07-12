@@ -51,4 +51,47 @@ const whoWriteMostBlog = (blogs) => {
     })
     return [noOfBlogByAuthor.find(obj => obj.blogs === mostBlog)];
 }
-module.exports = { dummy, totalLikes, favoriteBlog, whoWriteMostBlog };
+const authorWithMostLikes = (blogs) => {
+    if (blogs.length === 0) {
+        return "blogs array is empty"
+    }
+    if (blogs.length === 1) {
+        return {
+            author: blogs[0].author,
+            likes: blogs[0].likes
+        }
+    }
+    function compare(a, b) {
+        if (a.author < b.author) {
+            return -1;
+        }
+        if (a.author > b.author) {
+            return 1;
+        }
+        return 0;
+    }
+    const sortedBlog = blogs.sort(compare)
+    const totalLikesPerAuthor = sortedBlog.reduce((previousValue, currentValue, currentIndex, arr) => {
+        if (previousValue.length === 0 || arr[currentIndex - 1].author !== currentValue.author) {
+            return previousValue.concat({
+                author: currentValue.author,
+                likes: currentValue.likes
+            })
+        }
+        const temp = previousValue.map((o) => {
+            if (o.author === currentValue.author) {
+                return {
+                    author: o.author,
+                    likes: o.likes + currentValue.likes
+                }
+            } else {
+                return o;
+            }
+        })
+        return temp;
+    }, [])
+    return totalLikesPerAuthor.sort((a, b) => {
+        return b.likes - a.likes
+    })[0]
+}
+module.exports = { dummy, totalLikes, favoriteBlog, whoWriteMostBlog, authorWithMostLikes };
