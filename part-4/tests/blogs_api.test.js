@@ -33,47 +33,65 @@ beforeEach(async () => {
     logger.info("initial entry added")
 })
 
-test('should return total number of blog = 2', async () => {
-    const response = await api.get('/api/blogs');
-    expect(response.body).toHaveLength(2);
-})
-test('a blog should be exist', async () => {
-    const response = await api.get('/api/blogs')
-    expect(response.body[0].id).toBeDefined()
-})
-
-test('should contain 3 blogs', async () => {
-    const newEntry = {
-        title: "testing3",
-        author: "admin",
-        url: "https://example.com",
-        likes: 1
-    }
-    await api.post('/api/blogs').send(newEntry);
-
-    const responseAfterPost = await api.get('/api/blogs');
-    expect(responseAfterPost.body).toHaveLength(3);
+describe('when there is initially some blogs', () => {
+    test('should return number of blogs in database', async () => {
+        const response = await api.get('/api/blogs')
+            .expect('Content-Type', /application\/json/)
+            .expect(200);
+        expect(response.body).toHaveLength(2);
+    })
 })
 
-test('when likes property is missing it take default 0', async () => {
-    const newEntry = {
-        title: "testing3",
-        author: "admin",
-        url: "https://example.com"
-    }
-    const response = await api.post('/api/blogs').send(newEntry);
+describe('viewing the specific blog', () => {
+    // need to update
+    test('a blog should be exist', async () => {
+        const response = await api.get('/api/blogs').expect(200);
+        const lastEntry = response.body[response.body.length - 1]
 
-    expect(response.body.likes).toBe(0);
+        const response2 = await api.get(`/api/blogs/${lastEntry.id}`).expect(200);
+        expect(response2.body).toEqual(lastEntry);
+    })
+    test('fails with statusCode 404 if blog doesn\'t exist', async () => {
+        const invalidId = "64a59bcf1de30a7d2da9b00f";
+        await api.get(`/api/blogs/${invalidId}`).expect(404);
+    });
 })
 
-test('when title or url is missing, it should response status code 400', async () => {
-    const newEntry = {
-        url: "https://example.com"
-    }
-    const response = await api.post('/api/blogs').send(newEntry);
+describe('addition of a new blog', () => {
 
-    expect(response.status).toBe(400);
+    test('Successfully add new blog when all data is available', async () => {
+        const newEntry = {
+            title: "testing3",
+            author: "admin",
+            url: "https://example.com",
+            likes: 1
+        }
+        await api.post('/api/blogs').send(newEntry).expect(201);
+
+        const responseAfterPost = await api.get('/api/blogs').expect(200);
+        expect(responseAfterPost.body).toHaveLength(3);
+    })
+
+    test('when likes property is missing it take default likes=0', async () => {
+        const newEntry = {
+            title: "testing3",
+            author: "admin",
+            url: "https://example.com"
+        }
+        const response = await api.post('/api/blogs').send(newEntry).expect(201);
+
+        expect(response.body.likes).toBe(0);
+    })
+    test('when title or url is missing, it should response status code 400', async () => {
+        const newEntry = {
+            url: "https://example.com"
+        }
+        const response = await api.post('/api/blogs').send(newEntry);
+
+        expect(response.status).toBe(400);
+    })
 })
+
 afterAll(async () => {
     await mongoose.connection.close();
 })
