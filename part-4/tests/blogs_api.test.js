@@ -37,7 +37,10 @@ test('should return total number of blog = 2', async () => {
     const response = await api.get('/api/blogs');
     expect(response.body).toHaveLength(2);
 })
-
+test('a blog should be exist', async () => {
+    const response = await api.get('/api/blogs')
+    expect(response.body[0].id).toBeDefined()
+})
 afterAll(async () => {
     await mongoose.connection.close();
 })
