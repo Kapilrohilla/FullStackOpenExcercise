@@ -3,7 +3,7 @@ const Blog = require('../model/mongo');
 
 blogRouter.get('/', async (req, res) => {
     const blogs = await Blog.find({})
-    res.status(201).json(blogs)
+    res.status(200).json(blogs)
 })
 blogRouter.get('/:id', async (req, res) => {
     const id = req.params.id;
@@ -19,7 +19,7 @@ blogRouter.post('/', async (req, res) => {
     const blog = new Blog(req.body);
     const response = await blog.save();
 
-    res.json(response);
+    res.status(201).json(response);
 })
 
 module.exports = blogRouter;

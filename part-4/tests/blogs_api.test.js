@@ -62,8 +62,17 @@ test('when likes property is missing it take default 0', async () => {
         url: "https://example.com"
     }
     const response = await api.post('/api/blogs').send(newEntry);
-    console.log(response.body);
+
     expect(response.body.likes).toBe(0);
+})
+
+test('when title or url is missing, it should response status code 400', async () => {
+    const newEntry = {
+        url: "https://example.com"
+    }
+    const response = await api.post('/api/blogs').send(newEntry);
+
+    expect(response.status).toBe(400);
 })
 afterAll(async () => {
     await mongoose.connection.close();
