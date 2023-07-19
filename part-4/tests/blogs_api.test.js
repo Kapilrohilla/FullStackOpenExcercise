@@ -43,7 +43,7 @@ describe('when there is initially some blogs', () => {
 })
 
 describe('viewing the specific blog', () => {
-    // need to update
+
     test('a blog should be exist', async () => {
         const response = await api.get('/api/blogs').expect(200);
         const lastEntry = response.body[response.body.length - 1]
@@ -90,6 +90,40 @@ describe('addition of a new blog', () => {
 
         expect(response.status).toBe(400);
     })
+})
+
+describe('deleting a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+        const blogs = await api.get('/api/blogs');
+        const blogToDelete = blogs.body[0];
+        await api.delete(`/api/blogs/${blogToDelete.id}`)
+            .expect(204)
+    })
+    test('when blog not found, statusCode=404', async () => {
+        let random_id = "64a597aa0584557fa85ed747";
+        await api.delete(`/api/blogs/${random_id}`)
+            .expect(404);
+    })
+})
+
+describe('update a blog', () => {
+    test('statusCode 200, when update successful', async () => {
+        const blogs = await api.get('/api/blogs');
+        const blogToUpdate = blogs.body[0];
+        const updatedBlog = {
+            ...blogs,
+            title: "update successfull"
+        }
+        await api.put(`/api/blogs/${blogToUpdate.id}`)
+            .send(updatedBlog)
+            .expect(200);
+    })
+    test("statusCode 404 for no blog found with matching id", async () => {
+        const randomId = "64a597aa0584557fa85ed747";
+
+        await api.put(`/api/blogs/${randomId}`)
+            .expect(404);
+    });
 })
 
 afterAll(async () => {
