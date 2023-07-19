@@ -11,18 +11,12 @@ blogRouter.get('/:id', async (req, res) => {
     res.status(200).json(response).end();
 })
 
-blogRouter.post('/', (req, res, next) => {
+blogRouter.post('/', async (req, res) => {
     const blog = new Blog(req.body);
-    blog.save()
-        .then(r => {
-            res.status(201).json(r);
-        })
-        .catch(err => {
-            res.status(500).json({
-                err: "internal error occurred or bad request"
-            })
-            next(err);
-        })
+
+    const response = await blog.save();
+
+    res.json(response);
 })
 
 module.exports = blogRouter;

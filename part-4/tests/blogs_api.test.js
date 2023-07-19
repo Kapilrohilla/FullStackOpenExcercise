@@ -16,10 +16,10 @@ const initialBlog = [
         likes: 99
     },
     {
-        title: "testing1",
+        title: "testing2",
         author: "admin",
         url: "https://example.com",
-        likes: 99
+        likes: 0
     }
 ];
 
@@ -40,6 +40,18 @@ test('should return total number of blog = 2', async () => {
 test('a blog should be exist', async () => {
     const response = await api.get('/api/blogs')
     expect(response.body[0].id).toBeDefined()
+})
+test('should contain 3 blogs', async () => {
+    const newEntry = {
+        title: "testing3",
+        author: "admin",
+        url: "https://example.com",
+        likes: 1
+    }
+    await api.post('/api/blogs').send(newEntry);
+
+    const responseAfterPost = await api.get('/api/blogs');
+    expect(responseAfterPost.body).toHaveLength(3);
 })
 afterAll(async () => {
     await mongoose.connection.close();
