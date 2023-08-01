@@ -4,6 +4,7 @@ const supertest = require('supertest')
 const app = require('../app');
 
 const Blog = require('../model/mongo');
+const User = require('../model/user');
 const logger = require('../utils/logger');
 
 const api = supertest(app);
@@ -126,6 +127,44 @@ describe('update a blog', () => {
     });
 })
 
+describe('creating a user', () => {
+    beforeEach(async () => {
+        await User.deleteMany({});
+    })
+    test('should give error when username length is less than 3', async () => {
+        const invalidUsername = {
+            username: "ab",
+            name: "ab",
+            password: "nothing"
+        }
+        await api
+            .post('/api/user')
+            .send(invalidUsername)
+            .expect(400)
+            .expect({ error: "username/password length is too short" });
+    })
+
+    test('should give error when password length is less than 3', async () => {
+        const invalidPswd = {
+            username: "abcde",
+            name: "ab",
+            password: "n"
+        }
+        await api
+            .post('/api/user')
+            .send(invalidPswd)
+            .expect(400)
+            .expect({ error: "username/password length is too short" })
+    })
+    test('should create a user', async () => {
+        const userData = {
+            username: "testingUser1",
+            name: "by kapil",
+            password: "testing"
+        }
+        await api.post('/api/user').send(userData).expect('Content-Type', /application\/json/).expect(201);
+    })
+})
 afterAll(async () => {
     await mongoose.connection.close();
 })
