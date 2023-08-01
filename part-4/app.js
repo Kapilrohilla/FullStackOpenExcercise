@@ -4,12 +4,13 @@ require('express-async-errors');
 const app = express();
 const cors = require('cors');
 const blogRouter = require('./controllers/blog');
+const userRouter = require('./controllers/users');
 const logger = require('./utils/logger');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const { unknownEndpoint, errorHandler, requestLogger } = require('./utils/middleware');
 
-morgan.token('postBody', function (req, res) {
+morgan.token('postBody', function (req) {
     return JSON.stringify(req.body)
 })
 app.use(morgan(':method :url :status : response-time ms - :res[content-length] :postBody'));
@@ -31,6 +32,8 @@ app.use(express.json());
 app.use(requestLogger);
 
 app.use('/api/blogs', blogRouter);
+app.use('/api/user', userRouter);
+
 app.use(unknownEndpoint);
 app.use(errorHandler);
 

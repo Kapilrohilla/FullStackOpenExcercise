@@ -3,5 +3,5 @@ const config = require('./utils/config');
 const { info } = require('./utils/logger');
 
 app.listen(config.PORT, () => {
-    info('server running on port: ' + config.PORT);
+    info('server running on port: http://localhost:' + config.PORT + "/");
 })
