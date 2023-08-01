@@ -1,5 +1,5 @@
 const blogRouter = require('express').Router();
-const Blog = require('../model/mongo');
+const Blog = require('../model/blog');
 
 // get blogs
 blogRouter.get('/', async (req, res) => {
@@ -21,6 +21,7 @@ blogRouter.get('/:id', async (req, res) => {
 blogRouter.post('/', async (req, res) => {
     let body = req.body;
 
+    console.log(req.authorization);
     if (!body.url || !body.title) {
         return res.status(400).json({
             err: "bad request - url, title is missing."

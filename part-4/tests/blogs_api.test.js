@@ -3,7 +3,7 @@ const supertest = require('supertest')
 
 const app = require('../app');
 
-const Blog = require('../model/mongo');
+const Blog = require('../model/blog');
 const User = require('../model/user');
 const logger = require('../utils/logger');
 

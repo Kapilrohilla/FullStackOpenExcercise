@@ -1,14 +1,5 @@
 const mongoose = require('mongoose')
-// const { info, error } = require('../utils/logger');
 require('dotenv').config();
-// const config = require('../utils/config');
-
-// info('connecting to monogdb url' + config.MONGODB_URI);
-// mongoose.connect(config.MONGODB_URI).then(r => {
-//     info('connected to mongodb');
-// }).catch(err => {
-//     error(err);
-// })
 
 const blogSchema = new mongoose.Schema({
     title: {
@@ -20,7 +11,11 @@ const blogSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    likes: Number
+    likes: Number,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    }
 })
 
 blogSchema.set('toJSON', {
