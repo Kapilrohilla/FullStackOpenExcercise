@@ -5,6 +5,7 @@ const app = express();
 const cors = require('cors');
 const blogRouter = require('./controllers/blog');
 const userRouter = require('./controllers/users');
+const loginRouter = require('./controllers/login');
 const logger = require('./utils/logger');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
@@ -33,7 +34,7 @@ app.use(requestLogger);
 
 app.use('/api/blogs', blogRouter);
 app.use('/api/user', userRouter);
-
+app.use('/api/login', loginRouter);
 app.use(unknownEndpoint);
 app.use(errorHandler);
 
