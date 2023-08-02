@@ -20,21 +20,12 @@ blogRouter.get('/:id', async (req, res) => {
         return res.status(404).end();
     }
 })
-// for token implementation
-const getToken = req => {
-    const authorization = req.get('authorization');
 
-    if (authorization && authorization.startsWith('Bearer ')) {
-        return authorization.replace("Bearer ", "");
-    }
-    return null;
-}
 // add new blog
 blogRouter.post('/', async (req, res) => {
     let body = req.body;
 
-    const decodedToken = jwt.verify(getToken(req), SECRET_CODE_FOR_TOKEN);
-    console.log(decodedToken);
+    const decodedToken = jwt.verify(req.token, SECRET_CODE_FOR_TOKEN);
     if (!decodedToken) {
         return res.status(401).json({ error: "token invalid" });
     }
