@@ -1,8 +1,7 @@
 const blogRouter = require('express').Router();
-const jwt = require('jsonwebtoken');
 const Blog = require('../model/blog');
 const User = require('../model/user');
-const { SECRET_CODE_FOR_TOKEN } = require('../utils/config');
+const { userExtractor } = require('../utils/middleware');
 
 // get blogs
 blogRouter.get('/', async (req, res) => {
@@ -23,14 +22,13 @@ blogRouter.get('/:id', async (req, res) => {
 })
 
 // add new blog
-blogRouter.post('/', async (req, res) => {
+blogRouter.post('/', userExtractor, async (req, res) => {
     let body = req.body;
 
-    const decodedToken = jwt.verify(req.token, SECRET_CODE_FOR_TOKEN);
-    if (!decodedToken) {
+    if (!req.user) {
         return res.status(401).json({ error: "token invalid" });
     }
-    const user = await User.findById(decodedToken.id);
+    const user = await User.findById(req.user.id);
 
     if (!body.url || !body.title) {
         return res.status(400).json({
@@ -54,24 +52,24 @@ blogRouter.post('/', async (req, res) => {
     return res.status(201).json(response);
 })
 // delete blog
-blogRouter.delete('/:id', async (req, res) => {
+blogRouter.delete('/:id', userExtractor, async (req, res) => {
     let id = req.params.id;
 
-    let decodedToken = jwt.verify(req.token, SECRET_CODE_FOR_TOKEN, (err) => {
-        if (err) {
-            console.log("error");
-            console.log(err);
-            res.status(401).json({ err: "invalid user" });
-        }
-    });
-    console.log(decodedToken);
+    if (!req.user) {
+        return res.status(401).json({ err: "invalid user" });
+    }
 
     const response = await Blog.findByIdAndDelete(id);
 
-    if (response === null) {
+    if (!response) {
         return res.status(400).end();
+    } else {
+        req.user.blogs.splice(req.user.blogs.indexOf(id), 1)
+        console.log(req.user);
+        await User.findByIdAndUpdate(req.user.id, req.user);
+        console.log("user data has been updated");
     }
-    res.json({ "success": `Blog with ${id} is deleted` }).status(201).end();
+    res.json({ "success": `Blog with ${id} is deleted by ${req.user.username}` }).status(201).end();
 })
 // update blog;
 blogRouter.put('/:id', async (req, res) => {
