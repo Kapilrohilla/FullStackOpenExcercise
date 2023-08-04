@@ -24,12 +24,10 @@ blogRouter.get('/:id', async (req, res) => {
 // add new blog
 blogRouter.post('/', userExtractor, async (req, res) => {
     let body = req.body;
-
     if (!req.user) {
         return res.status(401).json({ error: "token invalid" });
     }
     const user = await User.findById(req.user.id);
-
     if (!body.url || !body.title) {
         return res.status(400).json({
             err: "bad request - url, title is missing."
@@ -69,7 +67,7 @@ blogRouter.delete('/:id', userExtractor, async (req, res) => {
         await User.findByIdAndUpdate(req.user.id, req.user);
         console.log("user data has been updated");
     }
-    res.json({ "success": `Blog with ${id} is deleted by ${req.user.username}` }).status(201).end();
+    res.json({ "success": `Blog with ${id} is deleted by ${req.user.username}` }).status(202).end();
 })
 // update blog;
 blogRouter.put('/:id', userExtractor, async (req, res) => {
@@ -83,9 +81,6 @@ blogRouter.put('/:id', userExtractor, async (req, res) => {
     updatedBlog.user = req.user.id
 
     const response = await Blog.findByIdAndUpdate(id, updatedBlog);
-    console.log("---------resposne---------");
-    console.log(response);
-    console.log("---------resposne---------");
     if (!response) {
         return res.status(404).json({
             err: `blog not found with ${id}`
