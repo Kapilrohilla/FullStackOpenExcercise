@@ -55,8 +55,8 @@ blogRouter.post('/', userExtractor, async (req, res) => {
 blogRouter.delete('/:id', userExtractor, async (req, res) => {
     let id = req.params.id;
 
-    if (!req.user) {
-        return res.status(401).json({ err: "invalid user" });
+    if (!(req.user && req.user.blogs.includes(id))) {
+        return res.sendStatus(401);
     }
 
     const response = await Blog.findByIdAndDelete(id);
@@ -72,20 +72,28 @@ blogRouter.delete('/:id', userExtractor, async (req, res) => {
     res.json({ "success": `Blog with ${id} is deleted by ${req.user.username}` }).status(201).end();
 })
 // update blog;
-blogRouter.put('/:id', async (req, res) => {
+blogRouter.put('/:id', userExtractor, async (req, res) => {
     const id = req.params.id;
     const updatedBlog = req.body;
 
-    const response = await Blog.findByIdAndUpdate(id, updatedBlog);
+    if (!(req.user && req.user.blogs.includes(id))) {
+        return res.sendStatus(401);
+    }
 
-    if (response === null) {
+    updatedBlog.user = req.user.id
+
+    const response = await Blog.findByIdAndUpdate(id, updatedBlog);
+    console.log("---------resposne---------");
+    console.log(response);
+    console.log("---------resposne---------");
+    if (!response) {
         return res.status(404).json({
             err: `blog not found with ${id}`
         });
     }
 
     return res.status(200).json({
-        "success": `Blog with ${id} is successfull`
+        "success": `Blog with ${id} is successfull by ${req.user.username}`
     })
 })
 module.exports = blogRouter;
