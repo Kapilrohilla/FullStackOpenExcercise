@@ -50,32 +50,23 @@ blogRouter.post('/', userExtractor, async (req, res) => {
 blogRouter.delete('/:id', userExtractor, async (req, res) => {
     let id = req.params.id;
 
+    const response = await Blog.findByIdAndDelete(id);
+    if (!response) {
+        return res.status(400).end();
+    }
     if (!(req.user && req.user.blogs.includes(id))) {
         return res.sendStatus(401);
     }
 
-    const response = await Blog.findByIdAndDelete(id);
+    req.user.blogs.splice(req.user.blogs.indexOf(id), 1)
+    await User.findByIdAndUpdate(req.user.id, req.user);
 
-    if (!response) {
-        return res.status(400).end();
-    } else {
-        req.user.blogs.splice(req.user.blogs.indexOf(id), 1)
-        console.log(req.user);
-        await User.findByIdAndUpdate(req.user.id, req.user);
-        console.log("user data has been updated");
-    }
-    res.json({ "success": `Blog with ${id} is deleted by ${req.user.username}` }).status(202).end();
+    res.status(202).json({ "success": `Blog with ${id} is deleted by ${req.user.username}` }).end();
 })
 // update blog;
 blogRouter.put('/:id', userExtractor, async (req, res) => {
     const id = req.params.id;
     const updatedBlog = req.body;
-
-    if (!(req.user && req.user.blogs.includes(id))) {
-        return res.sendStatus(401);
-    }
-
-    updatedBlog.user = req.user.id
 
     const response = await Blog.findByIdAndUpdate(id, updatedBlog);
     if (!response) {
@@ -83,6 +74,12 @@ blogRouter.put('/:id', userExtractor, async (req, res) => {
             err: `blog not found with ${id}`
         });
     }
+
+    if (!(req.user && req.user.blogs.includes(id))) {
+        return res.sendStatus(401);
+    }
+
+    updatedBlog.user = req.user.id
 
     return res.status(200).json({
         "success": `Blog with ${id} is successfull by ${req.user.username}`
