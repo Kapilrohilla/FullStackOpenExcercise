@@ -33,9 +33,6 @@ blogRouter.post('/', userExtractor, async (req, res) => {
             err: "bad request - url, title is missing."
         })
     }
-    if (!body.likes) {
-        body.likes = 0;
-    }
     const blog = new Blog({
         title: body.title,
         author: body.author,
