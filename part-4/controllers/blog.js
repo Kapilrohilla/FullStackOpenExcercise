@@ -24,19 +24,14 @@ blogRouter.get('/:id', async (req, res) => {
 // add new blog
 blogRouter.post('/', userExtractor, async (req, res) => {
     let body = req.body;
-
     if (!req.user) {
         return res.status(401).json({ error: "token invalid" });
     }
     const user = await User.findById(req.user.id);
-
     if (!body.url || !body.title) {
         return res.status(400).json({
             err: "bad request - url, title is missing."
         })
-    }
-    if (!body.likes) {
-        body.likes = 0;
     }
     const blog = new Blog({
         title: body.title,
@@ -55,42 +50,36 @@ blogRouter.post('/', userExtractor, async (req, res) => {
 blogRouter.delete('/:id', userExtractor, async (req, res) => {
     let id = req.params.id;
 
+    const response = await Blog.findByIdAndDelete(id);
+    if (!response) {
+        return res.status(400).end();
+    }
     if (!(req.user && req.user.blogs.includes(id))) {
         return res.sendStatus(401);
     }
 
-    const response = await Blog.findByIdAndDelete(id);
+    req.user.blogs.splice(req.user.blogs.indexOf(id), 1)
+    await User.findByIdAndUpdate(req.user.id, req.user);
 
-    if (!response) {
-        return res.status(400).end();
-    } else {
-        req.user.blogs.splice(req.user.blogs.indexOf(id), 1)
-        console.log(req.user);
-        await User.findByIdAndUpdate(req.user.id, req.user);
-        console.log("user data has been updated");
-    }
-    res.json({ "success": `Blog with ${id} is deleted by ${req.user.username}` }).status(201).end();
+    res.status(202).json({ "success": `Blog with ${id} is deleted by ${req.user.username}` }).end();
 })
 // update blog;
 blogRouter.put('/:id', userExtractor, async (req, res) => {
     const id = req.params.id;
     const updatedBlog = req.body;
 
-    if (!(req.user && req.user.blogs.includes(id))) {
-        return res.sendStatus(401);
-    }
-
-    updatedBlog.user = req.user.id
-
     const response = await Blog.findByIdAndUpdate(id, updatedBlog);
-    console.log("---------resposne---------");
-    console.log(response);
-    console.log("---------resposne---------");
     if (!response) {
         return res.status(404).json({
             err: `blog not found with ${id}`
         });
     }
+
+    if (!(req.user && req.user.blogs.includes(id))) {
+        return res.sendStatus(401);
+    }
+
+    updatedBlog.user = req.user.id
 
     return res.status(200).json({
         "success": `Blog with ${id} is successfull by ${req.user.username}`
