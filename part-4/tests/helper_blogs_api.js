@@ -43,12 +43,24 @@ const initialBlog = [
         likes: 0
     }
 ];
-
+const userForToken = {
+    username: "admin",
+    name: "admin",
+    password: "testing"
+}
+const newBlog = {
+    title: "testing2",
+    author: "admin",
+    url: "https://example.com",
+    likes: 0
+}
 module.exports = {
     initialBlog,
     newBlogData,
     getBlogDataInDb,
     blogsInDb,
     users: [user1, user2],
-    userInDb
+    userInDb,
+    userForToken,
+    newBlog
 }
