@@ -25,7 +25,9 @@ const App = () => {
     );
     if (loggedInUser) {
       setUser(loggedInUser);
+      blogService.setToken(loggedInUser.token);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -56,6 +58,7 @@ const App = () => {
         setMessage("");
       }, 3000);
       setIsSuccess(true);
+      blogService.setToken(response.token);
     } catch (exception) {
       setMessage("Wrong username or password");
       setIsSuccess(false);
@@ -122,7 +125,6 @@ const App = () => {
       url: target.value,
     });
   };
-
   const createBlog = async (e) => {
     e.preventDefault();
     setNewBlog({
@@ -132,12 +134,14 @@ const App = () => {
     });
     try {
       const data = await blogService.create(newBlog);
-      console.log(data);
       setMessage(`successfully add: ${newBlog.title}`);
+      setBlogs([...blogs, data]);
+      setIsSuccess(true);
     } catch (error) {
       setMessage(`Unable to add: ${newBlog.title}`);
       console.log("unable to add");
       console.log(error);
+      isSuccess(false);
     }
   };
 

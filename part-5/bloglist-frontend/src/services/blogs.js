@@ -10,7 +10,7 @@ const getAll = () => {
   const request = axios.get(baseUrl);
   return request.then((response) => response.data);
 };
-const create = async ({ newBlog }) => {
+const create = async (newBlog) => {
   const config = {
     headers: { Authorization: token },
   };
