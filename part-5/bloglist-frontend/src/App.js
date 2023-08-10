@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import AddNewBlog from "./components/AddNewBlog";
+import Toggable from "./components/Toggable";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
@@ -32,6 +33,8 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const addBlogRef = useRef();
+  console.log(addBlogRef);
   const updateUsername = ({ target }) => {
     setLoginCredential({
       ...loginCredential,
@@ -139,6 +142,7 @@ const App = () => {
       setMessage(`successfully add: ${newBlog.title}`);
       setBlogs([...blogs, data]);
       setIsSuccess(true);
+      addBlogRef.current.toggleVisiblity();
     } catch (error) {
       setMessage(`Unable to add: ${newBlog.title}`);
       console.log("unable to add");
@@ -155,11 +159,13 @@ const App = () => {
         {user.name} logged in &nbsp;&nbsp;
         <button onClick={handleLogout}>LOGOUT</button>
       </div>
-      <AddNewBlog
-        handleChange={{ updateBlogAuthor, updateBlogTitle, updateBlogUrl }}
-        handleSubmit={createBlog}
-        newBlog={newBlog}
-      />
+      <Toggable buttonLabel="create blog" ref={addBlogRef}>
+        <AddNewBlog
+          handleChange={{ updateBlogAuthor, updateBlogTitle, updateBlogUrl }}
+          handleSubmit={createBlog}
+          newBlog={newBlog}
+        />
+      </Toggable>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
