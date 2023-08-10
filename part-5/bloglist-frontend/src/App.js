@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
+import Blog, { BlogDetail } from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import AddNewBlog from "./components/AddNewBlog";
 import Toggable from "./components/Toggable";
+import ToggleBlogInfo from "./components/ToggleBlogInfo";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
@@ -159,7 +160,7 @@ const App = () => {
         {user.name} logged in &nbsp;&nbsp;
         <button onClick={handleLogout}>LOGOUT</button>
       </div>
-      <Toggable buttonLabel="create blog" ref={addBlogRef}>
+      <Toggable buttonLabel="create new blog" ref={addBlogRef}>
         <AddNewBlog
           handleChange={{ updateBlogAuthor, updateBlogTitle, updateBlogUrl }}
           handleSubmit={createBlog}
@@ -167,7 +168,7 @@ const App = () => {
         />
       </Toggable>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <ToggleBlogInfo blog={blog}>{blog.title}</ToggleBlogInfo>
       ))}
     </div>
   );
