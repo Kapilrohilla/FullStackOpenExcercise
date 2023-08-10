@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import Blog, { BlogDetail } from "./components/Blog";
+import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import AddNewBlog from "./components/AddNewBlog";
@@ -35,7 +35,6 @@ const App = () => {
   }, []);
 
   const addBlogRef = useRef();
-  console.log(addBlogRef);
   const updateUsername = ({ target }) => {
     setLoginCredential({
       ...loginCredential,
@@ -151,7 +150,27 @@ const App = () => {
       isSuccess(false);
     }
   };
+  async function handleLikeBtn(blog) {
+    const idToUpdate = blog.id;
+    console.log(blog);
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+    };
 
+    const response = await blogService.update(idToUpdate, updatedBlog);
+    if (response.hasOwnProperty("success")) {
+      let updatedFinalBlogs = blogs.map((o) => {
+        if (o.id === idToUpdate) {
+          return updatedBlog;
+        } else {
+          return o;
+        }
+      });
+      console.log(updatedFinalBlogs);
+      setBlogs(updatedFinalBlogs);
+    }
+  }
   return (
     <div>
       <h2>blogs</h2>
@@ -168,7 +187,9 @@ const App = () => {
         />
       </Toggable>
       {blogs.map((blog) => (
-        <ToggleBlogInfo blog={blog}>{blog.title}</ToggleBlogInfo>
+        <ToggleBlogInfo blog={blog} handleLikeBtn={handleLikeBtn} key={blog.id}>
+          <Blog title={blog.title} />
+        </ToggleBlogInfo>
       ))}
     </div>
   );

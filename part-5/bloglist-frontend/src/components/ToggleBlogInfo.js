@@ -19,7 +19,10 @@ const ToggleBlogInfo = (props) => {
         <div>
           <p>URL :- {props.blog.url}</p>
           <p>
-            LIKES :- {props.blog.likes} <button>like</button>
+            LIKES :- {props.blog.likes}{" "}
+            <button onClick={() => props.handleLikeBtn(props.blog)}>
+              like
+            </button>
           </p>
           <p>Author :- {props.blog.author}</p>
         </div>
