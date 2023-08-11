@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
@@ -37,8 +38,6 @@ const App = () => {
       setUser(loggedInUser);
       blogService.setToken(loggedInUser.token);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addBlogRef = useRef();
