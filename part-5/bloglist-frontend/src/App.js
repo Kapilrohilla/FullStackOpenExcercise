@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import AddNewBlog from "./components/AddNewBlog";
+import Toggable from "./components/Toggable";
+import ToggleBlogInfo from "./components/ToggleBlogInfo";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
@@ -18,7 +21,10 @@ const App = () => {
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => {
+      const sortedBlog = blogs.sort((a, b) => b.likes - a.likes);
+      setBlogs(sortedBlog);
+    });
 
     const loggedInUser = JSON.parse(
       window.localStorage.getItem("loggedInUser")
@@ -31,6 +37,7 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const addBlogRef = useRef();
   const updateUsername = ({ target }) => {
     setLoginCredential({
       ...loginCredential,
@@ -103,6 +110,7 @@ const App = () => {
     setUser(null);
     window.localStorage.removeItem("loggedInUser");
     setMessage(`${user.name} logged out successfully`);
+    setIsSuccess(true);
     setTimeout(() => {
       setMessage("");
     }, 3000);
@@ -135,48 +143,57 @@ const App = () => {
     try {
       const data = await blogService.create(newBlog);
       setMessage(`successfully add: ${newBlog.title}`);
+
       setBlogs([...blogs, data]);
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
       setIsSuccess(true);
+      addBlogRef.current.toggleVisiblity();
     } catch (error) {
       setMessage(`Unable to add: ${newBlog.title}`);
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
       console.log("unable to add");
       console.log(error);
       isSuccess(false);
     }
   };
+  async function handleLikeBtn(blog) {
+    const idToUpdate = blog.id;
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+    };
 
-  const createBlogForm = () => (
-    <form onSubmit={createBlog}>
-      <div className="title">
-        <label htmlFor="title">title: </label>
-        <input
-          type="text"
-          value={newBlog.title}
-          onChange={updateBlogTitle}
-          id="title"
-        />
-      </div>
-      <div className="author">
-        <label htmlFor="author">author: </label>
-        <input
-          type="text"
-          id="author"
-          value={newBlog.author}
-          onChange={updateBlogAuthor}
-        />
-      </div>
-      <div className="url">
-        <label htmlFor="url">url: </label>
-        <input
-          type="text"
-          id="url"
-          value={newBlog.url}
-          onChange={updateBlogUrl}
-        />
-      </div>
-      <button type="submit">CREATE</button>
-    </form>
-  );
+    const response = await blogService.update(idToUpdate, updatedBlog);
+    if (response.hasOwnProperty("success")) {
+      let updatedFinalBlogs = blogs
+        .map((o) => {
+          if (o.id === idToUpdate) {
+            return updatedBlog;
+          } else {
+            return o;
+          }
+        })
+        .sort((a, b) => b.likes - a.likes);
+      setBlogs(updatedFinalBlogs);
+    }
+  }
+  async function handleDelete(id) {
+    const response = await blogService.deleteData(id);
+    if (response.hasOwnProperty("success")) {
+      const blogAfterDeleting = blogs.filter((o) => o.id !== id);
+      setBlogs(blogAfterDeleting);
+    } else {
+      setMessage("failed to delete blog");
+      setIsSuccess(false);
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
+    }
+  }
   return (
     <div>
       <h2>blogs</h2>
@@ -185,9 +202,22 @@ const App = () => {
         {user.name} logged in &nbsp;&nbsp;
         <button onClick={handleLogout}>LOGOUT</button>
       </div>
-      {createBlogForm()}
+      <Toggable buttonLabel="create new blog" ref={addBlogRef}>
+        <AddNewBlog
+          handleChange={{ updateBlogAuthor, updateBlogTitle, updateBlogUrl }}
+          handleSubmit={createBlog}
+          newBlog={newBlog}
+        />
+      </Toggable>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <ToggleBlogInfo
+          blog={blog}
+          handleLikeBtn={handleLikeBtn}
+          handleToDelete={() => handleDelete(blog.id)}
+          key={blog.id}
+        >
+          <Blog title={blog.title} />
+        </ToggleBlogInfo>
       ))}
     </div>
   );
