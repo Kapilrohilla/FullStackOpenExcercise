@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const AddNewBlog = ({ handleChange, handleSubmit, newBlog }) => {
   return (
@@ -33,6 +34,20 @@ const AddNewBlog = ({ handleChange, handleSubmit, newBlog }) => {
       <button type="submit">CREATE</button>
     </form>
   );
+};
+
+AddNewBlog.propTypes = {
+  handleChange: PropTypes.exact({
+    updateBlogAuthor: PropTypes.func.isRequired,
+    updateBlogTitle: PropTypes.func.isRequired,
+    updateBlogUrl: PropTypes.func.isRequired,
+  }),
+  handleSubmit: PropTypes.func.isRequired,
+  newBlog: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default AddNewBlog;
