@@ -25,6 +25,7 @@ const ToggleBlogInfo = (props) => {
             </button>
           </p>
           <p>Author :- {props.blog.author}</p>
+          <button onClick={props.handleToDelete}>Remove</button>
         </div>
       )}
     </div>

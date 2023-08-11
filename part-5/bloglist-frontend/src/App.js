@@ -21,7 +21,10 @@ const App = () => {
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => {
+      const sortedBlog = blogs.sort((a, b) => b.likes - a.likes);
+      setBlogs(sortedBlog);
+    });
 
     const loggedInUser = JSON.parse(
       window.localStorage.getItem("loggedInUser")
@@ -140,11 +143,18 @@ const App = () => {
     try {
       const data = await blogService.create(newBlog);
       setMessage(`successfully add: ${newBlog.title}`);
+
       setBlogs([...blogs, data]);
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
       setIsSuccess(true);
       addBlogRef.current.toggleVisiblity();
     } catch (error) {
       setMessage(`Unable to add: ${newBlog.title}`);
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
       console.log("unable to add");
       console.log(error);
       isSuccess(false);
@@ -152,7 +162,6 @@ const App = () => {
   };
   async function handleLikeBtn(blog) {
     const idToUpdate = blog.id;
-    console.log(blog);
     const updatedBlog = {
       ...blog,
       likes: blog.likes + 1,
@@ -160,15 +169,29 @@ const App = () => {
 
     const response = await blogService.update(idToUpdate, updatedBlog);
     if (response.hasOwnProperty("success")) {
-      let updatedFinalBlogs = blogs.map((o) => {
-        if (o.id === idToUpdate) {
-          return updatedBlog;
-        } else {
-          return o;
-        }
-      });
-      console.log(updatedFinalBlogs);
+      let updatedFinalBlogs = blogs
+        .map((o) => {
+          if (o.id === idToUpdate) {
+            return updatedBlog;
+          } else {
+            return o;
+          }
+        })
+        .sort((a, b) => b.likes - a.likes);
       setBlogs(updatedFinalBlogs);
+    }
+  }
+  async function handleDelete(id) {
+    const response = await blogService.deleteData(id);
+    if (response.hasOwnProperty("success")) {
+      const blogAfterDeleting = blogs.filter((o) => o.id !== id);
+      setBlogs(blogAfterDeleting);
+    } else {
+      setMessage("failed to delete blog");
+      setIsSuccess(false);
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
     }
   }
   return (
@@ -187,7 +210,12 @@ const App = () => {
         />
       </Toggable>
       {blogs.map((blog) => (
-        <ToggleBlogInfo blog={blog} handleLikeBtn={handleLikeBtn} key={blog.id}>
+        <ToggleBlogInfo
+          blog={blog}
+          handleLikeBtn={handleLikeBtn}
+          handleToDelete={() => handleDelete(blog.id)}
+          key={blog.id}
+        >
           <Blog title={blog.title} />
         </ToggleBlogInfo>
       ))}
