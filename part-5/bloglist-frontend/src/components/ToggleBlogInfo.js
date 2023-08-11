@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 const ToggleBlogInfo = (props) => {
   const [showDetail, setShowDetail] = useState(false);
@@ -30,6 +31,12 @@ const ToggleBlogInfo = (props) => {
       )}
     </div>
   );
+};
+
+ToggleBlogInfo.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleLikeBtn: PropTypes.func.isRequired,
+  handleToDelete: PropTypes.func.isRequired,
 };
 
 export default ToggleBlogInfo;

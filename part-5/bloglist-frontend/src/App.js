@@ -5,6 +5,10 @@ import loginService from "./services/login";
 import AddNewBlog from "./components/AddNewBlog";
 import Toggable from "./components/Toggable";
 import ToggleBlogInfo from "./components/ToggleBlogInfo";
+
+import PropTypes from "prop-types";
+import LoginForm from "./components/LoginForm";
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
@@ -75,34 +79,17 @@ const App = () => {
       console.log("login error occurred");
     }
   };
-  const loginForm = () => (
-    <form onSubmit={handleLoginSubmit}>
-      <div className="username">
-        <label htmlFor="getUsername">username: </label>
-        <input
-          type="text"
-          value={loginCredential.username}
-          onChange={updateUsername}
-        />
-      </div>
-      <div className="password">
-        <label htmlFor="getPassword">password: </label>
-        <input
-          type="password"
-          value={loginCredential.password}
-          onChange={updatePassword}
-        />
-      </div>
-      <button type="submit">LOGIN</button>
-    </form>
-  );
 
   if (!user) {
     return (
       <div>
         <h2>Log in to application</h2>
         <MessagePopup message={message} isSuccess={isSuccess} />
-        {loginForm()}
+        <LoginForm
+          handleLoginSubmit={handleLoginSubmit}
+          loginCredential={loginCredential}
+          updateCredentials={{ updateUsername, updatePassword }}
+        />
       </div>
     );
   }
@@ -243,5 +230,10 @@ const MessagePopup = ({ message, isSuccess }) => {
   ) : (
     <></>
   );
+};
+
+MessagePopup.propTypes = {
+  message: PropTypes.string,
+  isSuccess: PropTypes.bool,
 };
 export default App;
