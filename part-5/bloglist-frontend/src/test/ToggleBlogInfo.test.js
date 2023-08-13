@@ -5,6 +5,8 @@ import ToggleBlogInfo from "../components/ToggleBlogInfo";
 import "@testing-library/jest-dom/extend-expect";
 
 describe("<ToggleBlogInfo />", () => {
+  const mock4HandleLikeBtn = jest.fn();
+  const mock4HandleDeleteBtn = jest.fn();
   beforeEach(() => {
     const blogData = {
       title: "testing...",
@@ -14,8 +16,6 @@ describe("<ToggleBlogInfo />", () => {
       user: "randomIdForUserByTester",
       id: "randomIdForUserByTester",
     };
-    const mock4HandleLikeBtn = jest.fn();
-    const mock4HandleDeleteBtn = jest.fn();
     render(
       <ToggleBlogInfo
         blog={blogData}
@@ -58,5 +58,14 @@ describe("<ToggleBlogInfo />", () => {
     expect(urlElement).toBeNull();
     const likesElement = screen.queryByText("LIKES :-");
     expect(likesElement).toBeNull();
+  });
+
+  test("when like btn is clicked twice, it should send blog prop twice", () => {
+    const showBtn = screen.getByText("Show");
+    userEvent.click(showBtn);
+    const likeBtn = screen.getByText("like");
+    userEvent.click(likeBtn);
+    userEvent.click(likeBtn);
+    expect(mock4HandleLikeBtn.mock.calls).toHaveLength(2);
   });
 });
