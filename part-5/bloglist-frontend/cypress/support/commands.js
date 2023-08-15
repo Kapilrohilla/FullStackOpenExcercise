@@ -30,6 +30,23 @@ Cypress.Commands.add("login", ({ username, password }) => {
   });
   cy.visit("");
 });
+Cypress.Commands.add("createblog", ({ title, author, url }) => {
+  cy.request({
+    url: `${Cypress.env("BACKEND")}/blogs`,
+    method: "POST",
+    body: {
+      title,
+      author,
+      url,
+    },
+    headers: {
+      Authorization: `Bearer ${
+        JSON.parse(window.localStorage.getItem("loggedInUser")).token
+      }`,
+    },
+  });
+  cy.visit("");
+});
 //
 // -- This is a child command --
 // Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })

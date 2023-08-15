@@ -17,7 +17,7 @@ const ToggleBlogInfo = (props) => {
         {showDetail ? "Hide" : "Show"}
       </button>
       {showDetail && (
-        <div>
+        <div className="blog-detail">
           <p>URL :- {props.blog.url}</p>
           <p>
             LIKES :- {props.blog.likes}{" "}

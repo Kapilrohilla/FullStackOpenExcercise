@@ -44,7 +44,7 @@ describe("Blog app", () => {
         });
         return;
       });
-      it.only("possible to create", function () {
+      it("possible to create", function () {
         cy.get("button").contains("create new blog").click();
         cy.get("form").as("createBlogForm");
         cy.get("@createBlogForm")
@@ -67,6 +67,28 @@ describe("Blog app", () => {
         cy.contains("successfully add: new blog")
           .should("have.css", "color", "rgb(0, 128, 0)")
           .and("have.css", "border-style", "solid");
+      });
+      describe("can perform actions like", function () {
+        beforeEach(function () {
+          const blog1 = {
+            title: "testing",
+            author: "tester",
+            url: "abc.com",
+          };
+          cy.createblog({
+            title: blog1.title,
+            author: blog1.author,
+            url: blog1.url,
+          });
+          cy.contains("Show").click();
+          cy.get(".blog-detail").as("blogInfo");
+        });
+        it("like", function () {
+          cy.get("@blogInfo").contains("like").click().parent().contains("1");
+        });
+        it("delete", function () {
+          cy.get("@blogInfo").contains("Remove").click();
+        });
       });
     });
   });
