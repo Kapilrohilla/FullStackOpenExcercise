@@ -63,7 +63,7 @@ const App = () => {
       const response = await loginService.login(loginCredential);
       setUser(response);
       window.localStorage.setItem("loggedInUser", JSON.stringify(response));
-      setMessage(`logged in successful`);
+      setMessage(`login successful`);
       setTimeout(() => {
         setMessage("");
       }, 3000);

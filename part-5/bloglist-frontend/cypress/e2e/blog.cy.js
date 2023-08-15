@@ -1,14 +1,95 @@
 describe("Blog app", () => {
   beforeEach(() => {
     cy.resetdb();
+    cy.visit("");
+  });
+  it("Login form is shown", function () {
+    cy.get("h2").contains("Log in to application");
+    cy.get("form").as("loginForm").contains("username");
+    cy.get("@loginForm").contains("password");
+    cy.get("@loginForm").find("input:first");
+    cy.get("@loginForm").find("input:last");
+  });
+  describe("login", () => {
     const user1 = {
       name: "tester",
       username: "tester",
       password: "tester",
     };
-    cy.adduser(user1);
-  });
-  it("passes", () => {
-    cy.visit("");
+    beforeEach(() => {
+      cy.adduser(user1);
+    });
+    it("successful when credentials are correct", function () {
+      cy.get("input:first").type(user1.username);
+      cy.get("input:last").type(user1.password);
+      cy.get("button").click();
+      cy.contains("login successful")
+        .should("have.css", "color", "rgb(0, 128, 0)")
+        .and("have.css", "border-style", "solid");
+      cy.contains(`${user1.username} logged in`);
+    });
+    it("fails with wrong credentials", function () {
+      cy.get("input:first").type(user1.username);
+      cy.get("input:last").type("wrong");
+      cy.get("button").click();
+      cy.contains("Wrong username or password")
+        .should("have.css", "color", "rgb(255, 0, 0)")
+        .and("have.css", "border-style", "solid");
+    });
+    describe("blogs", function () {
+      beforeEach(() => {
+        cy.login({
+          username: user1.username,
+          password: user1.password,
+        });
+        return;
+      });
+      it("possible to create", function () {
+        cy.get("button").contains("create new blog").click();
+        cy.get("form").as("createBlogForm");
+        cy.get("@createBlogForm")
+          .contains("title")
+          .parent()
+          .find("input")
+          .type("new blog");
+        cy.get("@createBlogForm")
+          .contains("author")
+          .parent()
+          .find("input")
+          .type("tester");
+        cy.get("@createBlogForm")
+          .contains("url")
+          .parent()
+          .find("input")
+          .type("xyz.com");
+        cy.get("@createBlogForm").find("button").contains("CREATE").click();
+        cy.contains("new blog");
+        cy.contains("successfully add: new blog")
+          .should("have.css", "color", "rgb(0, 128, 0)")
+          .and("have.css", "border-style", "solid");
+      });
+      describe("can perform actions like", function () {
+        beforeEach(function () {
+          const blog1 = {
+            title: "testing",
+            author: "tester",
+            url: "abc.com",
+          };
+          cy.createblog({
+            title: blog1.title,
+            author: blog1.author,
+            url: blog1.url,
+          });
+          cy.contains("Show").click();
+          cy.get(".blog-detail").as("blogInfo");
+        });
+        it("like", function () {
+          cy.get("@blogInfo").contains("like").click().parent().contains("1");
+        });
+        it("delete", function () {
+          cy.get("@blogInfo").contains("Remove").click();
+        });
+      });
+    });
   });
 });
