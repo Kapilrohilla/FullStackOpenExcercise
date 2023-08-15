@@ -7,8 +7,13 @@ describe("Blog app", () => {
       password: "tester",
     };
     cy.adduser(user1);
-  });
-  it("passes", () => {
     cy.visit("");
+  });
+  it("Login form is shown", function () {
+    cy.get("h2").contains("Log in to application");
+    cy.get("form").as("loginForm").contains("username");
+    cy.get("@loginForm").contains("password");
+    cy.get("@loginForm").find("input:first");
+    cy.get("@loginForm").find("input:last");
   });
 });
