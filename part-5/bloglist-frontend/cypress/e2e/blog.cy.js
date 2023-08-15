@@ -36,5 +36,38 @@ describe("Blog app", () => {
         .should("have.css", "color", "rgb(255, 0, 0)")
         .and("have.css", "border-style", "solid");
     });
+    describe("blogs", function () {
+      beforeEach(() => {
+        cy.login({
+          username: user1.username,
+          password: user1.password,
+        });
+        return;
+      });
+      it.only("possible to create", function () {
+        cy.get("button").contains("create new blog").click();
+        cy.get("form").as("createBlogForm");
+        cy.get("@createBlogForm")
+          .contains("title")
+          .parent()
+          .find("input")
+          .type("new blog");
+        cy.get("@createBlogForm")
+          .contains("author")
+          .parent()
+          .find("input")
+          .type("tester");
+        cy.get("@createBlogForm")
+          .contains("url")
+          .parent()
+          .find("input")
+          .type("xyz.com");
+        cy.get("@createBlogForm").find("button").contains("CREATE").click();
+        cy.contains("new blog");
+        cy.contains("successfully add: new blog")
+          .should("have.css", "color", "rgb(0, 128, 0)")
+          .and("have.css", "border-style", "solid");
+      });
+    });
   });
 });
