@@ -24,14 +24,15 @@ interface argumentValues {
 export const processArgvExcercise = (args: string[]): argumentValuesForExcercise =>{
     if(args.length <3) throw new Error('Not enought arguments');
 
-    let target;
+    let target:number;
     if(!isNaN(Number(args[2]))){
         target = Number(args[2]);
+    }else{
+      target = 0;
     }
 
     args.splice(0,3)
-    const trainingDays = args.map((args)=>{
-        if(!isNaN(Number(args)))
+    const trainingDays = args.map((args:string):number=>{
         return Number(args);
     })
 

@@ -3,7 +3,7 @@ import { processArgv } from "./utils";
 const calculateBmi = (heightInCm: number, weightInKg: number): string => {
   const bmi: number = weightInKg / ((heightInCm * heightInCm) / 10000);
   if (bmi < 16.0) {
-    return "Underwieght (sever thinness";
+    return "Underwieght (sever thinness)";
   } else if (bmi >= 16.0 && bmi < 16.9) {
     return "Underweight (Moderate thinness)";
   } else if (bmi >= 17.0 && bmi < 18.4) {
@@ -34,3 +34,5 @@ try {
   }
   console.log(errMsg);
 }
+
+export default calculateBmi;
