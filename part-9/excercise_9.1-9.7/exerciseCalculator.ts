@@ -1,3 +1,5 @@
+import { processArgvExcercise } from "./utils"
+
 interface result {
     periodLength: number,
     trainingDays: number,
@@ -40,4 +42,13 @@ const calculateExcercise = (dailyExcercise: number[], target: number): result =>
         average
     }
 }
-console.log(calculateExcercise([3, 0, 2, 4.5, 0, 3, 1],2))
+// console.log(calculateExcercise([1, 0, 2, 4.5, 0, 3, 1, 0, 4],2))
+try{
+    const {target, trainingDays} = processArgvExcercise(process.argv);
+    console.log(calculateExcercise(trainingDays,target));
+}catch(err: unknown) {
+    let errorMsg = "something bad happended";
+    if(err instanceof Error){
+        errorMsg += "Error: " + err.message;
+    }
+}

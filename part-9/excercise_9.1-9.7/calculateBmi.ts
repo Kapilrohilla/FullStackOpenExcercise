@@ -1,20 +1,4 @@
-interface argumentValues {
-  heightInCm: number;
-  weightInKg: number;
-}
-
-const processArgv = (args: string[]): argumentValues => {
-  if (args.length < 4) throw new Error("Not enough arguments");
-  else if (args.length > 4) throw new Error("Too many arguments");
-  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
-    return {
-      heightInCm: Number(args[2]),
-      weightInKg: Number(args[3]),
-    };
-  } else {
-    throw new Error("Provided values are not number!");
-  }
-};
+import { processArgv } from "./utils";
 
 const calculateBmi = (heightInCm: number, weightInKg: number): string => {
   const bmi: number = weightInKg / ((heightInCm * heightInCm) / 10000);
