@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "ts-node": "ts-node"
+    "ts-node": "ts-node",
+    "calculateExercises": "ts-node exerciseCalculator.ts"
   },
   "author": "kapil",
   "license": "ISC",
   "devDependencies": {
     "ts-node": "^10.9.1"
+    
   }
 }
