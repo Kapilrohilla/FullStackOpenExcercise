@@ -25,14 +25,8 @@ try {
   const { heightInCm, weightInKg } = processArgv(process.argv);
   console.log(calculateBmi(heightInCm, weightInKg));
 } catch (err: unknown) {
-  let errMsg = "Something bad happened";
-  if (errMsg) {
-    let errMsg = "Something bad hapened";
-    if (err instanceof Error) {
-      errMsg += "Error: " + err.message;
-    }
-  }
+  const errMsg = "Something bad happened";
   console.log(errMsg);
-}
+  }
 
 export default calculateBmi;

@@ -1,4 +1,4 @@
-import { processArgvExcercise } from "./utils"
+import { processArgvExcercise } from "./utils";
 
 interface result {
     periodLength: number,
@@ -21,15 +21,15 @@ const calculateExcercise = (dailyExcercise: number[], target: number): result =>
     let success: boolean = false;
     if(average > target){
         rating = 2;
-        success = true
-        ratingDescription = "good performace"
+        success = true;
+        ratingDescription = "good performace";
         
     }else if(average < target && average > target/2){
         rating = 2;
-        ratingDescription = "not too bad but could be better"
+        ratingDescription = "not too bad but could be better";
     }else{
         rating = 1;
-        ratingDescription = "poor performance"
+        ratingDescription = "poor performance";
     }
     
     return {
@@ -40,8 +40,8 @@ const calculateExcercise = (dailyExcercise: number[], target: number): result =>
         rating,
         target,
         average
-    }
-}
+    };
+};
 // console.log(calculateExcercise([1, 0, 2, 4.5, 0, 3, 1, 0, 4],2))
 try{
     const {target, trainingDays} = processArgvExcercise(process.argv);
@@ -51,4 +51,7 @@ try{
     if(err instanceof Error){
         errorMsg += "Error: " + err.message;
     }
+    console.log(errorMsg);
 }
+
+export default calculateExcercise;

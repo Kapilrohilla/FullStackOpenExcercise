@@ -31,13 +31,15 @@ export const processArgvExcercise = (args: string[]): argumentValuesForExcercise
       target = 0;
     }
 
-    args.splice(0,3)
+    args.splice(0,3);
     const trainingDays = args.map((args:string):number=>{
         return Number(args);
-    })
+    });
 
     return {
         target,
         trainingDays
-    }
-}
+    };
+};
+
+export type array = number[];
